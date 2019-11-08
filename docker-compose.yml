@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  luigi_scheduler:
+    build:
+      context: luigi-scheduler
+      dockerfile: Dockerfile
+      args:
+      - PYTHON_VERSION=3.7
+      - LUIGI_USER=${USER}
+      - LUIGI_VERSION=2.8.9
+    environment:
+      LUIGI_TASK_HISTORY_DB_CONNECTION: postgres://luigi@db/dev
+      LUIGI_SCHEDULER_RECORD_TASK_HISTORY: "true"
+    networks:
+      - my_net
+    ports:
+      - "8082:8082"
+    depends_on:
+      - db
+    command: sh -c './wait-for-it.sh db:5432 -- ./run'
+    restart: always
+
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: luigi
+      POSTGRES_DB: dev
+
+networks:
+  my_net:
+    driver: bridge
