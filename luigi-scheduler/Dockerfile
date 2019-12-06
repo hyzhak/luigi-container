@@ -16,12 +16,10 @@ WORKDIR /tmp
 COPY requirements.txt /tmp
 
 RUN apk add --no-cache --virtual .build-deps \
-      build-base \
-      gcc \
-      libc-dev \
-      libffi-dev && \
-    apk add --no-cache --virtual \
-      postgresql-dev && \
+        gcc \
+        musl-dev \
+        postgresql-dev && \
+    apk add --no-cache postgresql-libs && \
     pip install luigi==${LUIGI_VERSION} && \
     pip install --default-timeout=1000 --no-cache-dir -r requirements.txt && \
     apk del .build-deps && \
