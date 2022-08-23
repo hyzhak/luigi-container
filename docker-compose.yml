@@ -6,9 +6,9 @@ services:
       context: luigi-scheduler
       dockerfile: Dockerfile
       args:
-      - PYTHON_VERSION=3.8
+      - PYTHON_VERSION=3.10
       - LUIGI_USER=${USER}
-      - LUIGI_VERSION=2.8.9
+      - LUIGI_VERSION=3.0.3
     environment:
       LUIGI_TASK_HISTORY_DB_CONNECTION: postgres://luigi@db/dev
       LUIGI_SCHEDULER_RECORD_TASK_HISTORY: "true"
@@ -22,10 +22,13 @@ services:
     restart: always
 
   db:
-    image: postgres:12
+    image: postgres:14
     environment:
       POSTGRES_USER: luigi
       POSTGRES_DB: dev
+      POSTGRES_HOST_AUTH_METHOD: trust
+    networks:
+      - my_net
 
     restart: always
 
